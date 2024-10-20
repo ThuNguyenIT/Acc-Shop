@@ -17,27 +17,27 @@ model users {
   status          Boolean           @default(true)
   full_name       String?
   social_nextwork Json?
-  user_activities user_activities[]
-  model_has_roles model_has_roles[]
 
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
 
-  seller_orders orders[] @relation("sellerRelation") // Đổi tên quan hệ này cho người bán
-  buyer_orders  orders[] @relation("buyerRelation") // Đổi tên quan hệ này cho người mua
+  user_activities user_activities[]
+  model_has_roles model_has_roles[]
+  seller_orders orders[] @relation("sellerRelation")
+  buyer_orders  orders[] @relation("buyerRelation")
 }
 
 model roles {
   id               Int                    @id @default(autoincrement())
   name             String                 @unique
-  guard_name       String?                @unique // Ví dụ: `web`, `api` để phân biệt các guard khác nhau
+  guard_name       String?                // Ví dụ: `web`, `api` để phân biệt các guard khác nhau
   description      String?                @db.Text
-  role_permissions role_has_permissions[]
 
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
 
   model_has_roles model_has_roles[]
+  role_permissions role_has_permissions[]
 }
 
 model permissions {
@@ -52,10 +52,11 @@ model permissions {
   title_name        String? // Tên hiển thị của quyền
   title_description String? // Mô tả của quyền
   status            Int? // Trạng thái của quyền: 1 (Show) hoặc 0 (Hide)
-  role_permissions  role_has_permissions[] // Quan hệ nhiều-nhiều với roles qua bảng trung gian
 
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
+
+  role_permissions  role_has_permissions[]
 }
 
 model role_has_permissions {
@@ -128,7 +129,7 @@ model platforms {
 
 model orders {
   id               Int       @id @default(autoincrement())
-  order_code       String    @unique // Mã đơn hàng, đảm bảo tính duy nhất
+  order_code       String    @unique
   seller           users     @relation("sellerRelation", fields: [seller_id], references: [id])
   seller_id        Int
   buyer            users     @relation("buyerRelation", fields: [buyer_id], references: [id])
