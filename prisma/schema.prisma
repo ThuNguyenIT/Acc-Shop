@@ -1,0 +1,373 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id                 Int                  @id @default(autoincrement())
+  username           String               @unique
+  email              String               @unique
+  is_verified        Boolean              @default(false)
+  status             Boolean              @default(true)
+  password           String
+  full_name          String?
+  mobile             String?              @unique
+  address            String?
+  birthday           DateTime?
+  audit_logs         audit_logs[]
+  author             authors?
+  bookmarks          bookmarks[]
+  comments           comments[]
+  favorites          favorites[]
+  notifications      notifications[]
+  point_transactions point_transactions[]
+  ratings            ratings[]
+  reading_progress   reading_progress[]
+  reports            reports[]
+  user_activities    user_activities[]
+  user_point         user_points?
+  user_roles         user_roles[]
+  user_view_stories  user_view_stories[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model user_points {
+  id      Int   @id @default(autoincrement())
+  user_id Int   @unique
+  bonus   Float @default(0)
+  point   Float @default(0)
+  user    users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model point_transactions {
+  id               Int      @id @default(autoincrement())
+  user_id          Int
+  amount           Float
+  transaction_type String
+  description      String?  @db.Text
+  created_at       DateTime @default(now())
+  user             users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([transaction_type])
+  @@index([created_at])
+}
+
+model user_activities {
+  id          Int     @id @default(autoincrement())
+  user_id     Int
+  action      String  @db.VarChar(100)
+  description String? @db.Text
+  ip_address  String? @db.VarChar(45)
+  user_agent  String?
+  session_id  String?
+  user        users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+
+  @@index([user_id])
+  @@index([created_at])
+}
+
+model roles {
+  id          Int          @id @default(autoincrement())
+  role        String       @unique
+  description String       @db.Text
+  user_roles  user_roles[]
+
+  created_at DateTime @default(now())
+}
+
+model user_roles {
+  user_id Int
+  role_id Int
+  role    roles @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  user    users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, role_id])
+  @@index([role_id], map: "user_roles_role_id_fkey")
+}
+
+model authors {
+  id           Int       @id @default(autoincrement())
+  user_id      Int?      @unique
+  name         String
+  slug         String    @unique
+  pseudonym    String?
+  alias        String?
+  bio          String?
+  avatar       String?
+  email        String?   @unique
+  nationality  String?
+  birthday     DateTime?
+  social_media String?
+  user         users?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  stories      stories[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model lists {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  slug        String        @unique
+  description String?       @db.Text
+  status      Boolean       @default(true)
+  stories     story_lists[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model categories {
+  id          Int                @id @default(autoincrement())
+  name        String             @unique
+  slug        String             @unique
+  description String?            @db.Text
+  status      Boolean       @default(true)
+  stories     story_categories[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model stories {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  slug              String              @unique
+  description       String?             @db.MediumText
+  avatar_image      Json?
+  cover_image       Json?
+  author_id         Int
+  view_count        Int                 @default(0)
+  isActive          Boolean             @default(true)
+  status            String
+  labels            Json?
+  tag               Json?
+  total_chapter     Int?                @default(0)
+  author            authors             @relation(fields: [author_id], references: [id])
+  lists             story_lists[]
+  categories        story_categories[]
+  chapters          chapters[]
+  bookmarks         bookmarks[]
+  comments          comments[]
+  favorites         favorites[]
+  reading_progress  reading_progress[]
+  ratings           ratings[]
+  reports           reports[]
+  story_views       story_views[]
+  user_view_stories user_view_stories[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([title])
+  @@index([author_id])
+  @@index([view_count])
+  @@index([created_at])
+}
+
+model story_lists {
+  story_id Int
+  list_id  Int
+  list     lists   @relation(fields: [list_id], references: [id], onDelete: Cascade)
+  story    stories @relation(fields: [story_id], references: [id])
+
+  @@id([story_id, list_id])
+  @@index([list_id], map: "story_lists_list_id_fkey")
+}
+
+model story_categories {
+  story_id    Int
+  category_id Int
+  category    categories @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  story       stories    @relation(fields: [story_id], references: [id])
+
+  @@id([story_id, category_id])
+  @@index([category_id], map: "story_categories_category_id_fkey")
+}
+
+model chapters {
+  id               Int                @id @default(autoincrement())
+  story_id         Int
+  title            String
+  content          String             @db.LongText
+  chapter_number   String
+  bookmarks        bookmarks[]
+  story            stories            @relation(fields: [story_id], references: [id])
+  comments         comments[]
+  reading_progress reading_progress[]
+  reports          reports[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([story_id, chapter_number])
+  @@index([story_id])
+}
+
+model reading_progress {
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  story_id     Int
+  chapter_id   Int
+  last_read_at DateTime @default(now())
+  chapter      chapters @relation(fields: [chapter_id], references: [id])
+  story        stories  @relation(fields: [story_id], references: [id])
+  user         users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  updated_at DateTime @updatedAt
+
+  @@unique([user_id, story_id])
+  @@index([chapter_id], map: "reading_progress_chapter_id_fkey")
+  @@index([story_id], map: "reading_progress_story_id_fkey")
+}
+
+model comments {
+  id                Int        @id @default(autoincrement())
+  story_id          Int?
+  chapter_id        Int?
+  user_id           Int?
+  content           String     @db.Text
+  parent_comment_id Int?
+  chapter           chapters?  @relation(fields: [chapter_id], references: [id])
+  story             stories?   @relation(fields: [story_id], references: [id])
+  parent_comment    comments?  @relation("CommentReplies", fields: [parent_comment_id], references: [id])
+  replies           comments[] @relation("CommentReplies")
+  user              users?     @relation(fields: [user_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([story_id])
+  @@index([chapter_id])
+  @@index([user_id])
+  @@index([parent_comment_id], map: "comments_parent_comment_id_fkey")
+}
+
+model ratings {
+  id       Int     @id @default(autoincrement())
+  story_id Int
+  user_id  Int
+  rating   Int     @default(1)
+  story    stories @relation(fields: [story_id], references: [id])
+  user     users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+
+  @@unique([user_id, story_id])
+  @@index([story_id], map: "ratings_story_id_fkey")
+}
+
+model favorites {
+  id       Int     @id @default(autoincrement())
+  story_id Int
+  user_id  Int
+  story    stories @relation(fields: [story_id], references: [id])
+  user     users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+
+  @@unique([user_id, story_id])
+  @@index([story_id], map: "favorites_story_id_fkey")
+}
+
+model story_views {
+  id         Int      @id @default(autoincrement())
+  story_id   Int
+  view_count Int      @default(0)
+  date       DateTime @default(now())
+  story      stories  @relation(fields: [story_id], references: [id])
+
+  @@unique([story_id, date])
+}
+
+model user_view_stories {
+  id       Int      @id @default(autoincrement())
+  story_id Int
+  user_id  Int
+  date     DateTime @default(now())
+  story    stories  @relation(fields: [story_id], references: [id])
+  user     users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([story_id, user_id, date])
+  @@index([user_id], map: "user_view_stories_user_id_fkey")
+}
+
+model notifications {
+  id       Int     @id @default(autoincrement())
+  user_id  Int?
+  content  String  @db.Text
+  type     String
+  is_read  Boolean @default(false)
+  archived Boolean @default(false)
+  deleted  Boolean @default(false)
+  user     users?  @relation(fields: [user_id], references: [id])
+
+  created_at DateTime @default(now())
+
+  @@index([user_id, is_read])
+  @@index([created_at])
+}
+
+model bookmarks {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  story_id   Int
+  chapter_id Int
+  chapter    chapters @relation(fields: [chapter_id], references: [id])
+  story      stories  @relation(fields: [story_id], references: [id])
+  user       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+
+  @@unique([user_id, story_id, chapter_id])
+  @@index([chapter_id], map: "bookmarks_chapter_id_fkey")
+  @@index([story_id], map: "bookmarks_story_id_fkey")
+}
+
+model reports {
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  content    String    @db.Text
+  story_id   Int?
+  chapter_id Int?
+  status     String    @default("PENDING")
+  chapter    chapters? @relation(fields: [chapter_id], references: [id])
+  story      stories?  @relation(fields: [story_id], references: [id])
+  user       users?    @relation(fields: [user_id], references: [id])
+
+  created_at DateTime @default(now())
+
+  @@index([status])
+  @@index([created_at])
+  @@index([user_id])
+  @@index([chapter_id], map: "reports_chapter_id_fkey")
+  @@index([story_id], map: "reports_story_id_fkey")
+}
+
+model audit_logs {
+  id        Int    @id @default(autoincrement())
+  user_id   Int?
+  entity    String
+  entity_id Int
+  action    String
+  changes   Json
+  user      users? @relation(fields: [user_id], references: [id])
+
+  created_at DateTime @default(now())
+
+  @@index([entity, entity_id])
+  @@index([user_id])
+  @@index([created_at])
+}

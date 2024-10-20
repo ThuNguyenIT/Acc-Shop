@@ -1,0 +1,19 @@
+.bottom-dashed {
+  border-bottom: 1px dashed #999;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+.modal-story-preference > button {
+  display: none;
+}
+.nav-link:hover {
+  background-color: transparent;
+}
+.image-story {
+  width: 80px;
+  flex: 0 0 80px;
+}
+.detail-story {
+  max-width: calc(100% - 80px);
+  flex: 0 0 calc(100% - 80px);
+}
