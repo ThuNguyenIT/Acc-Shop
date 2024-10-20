@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       return createResponse('Username hoặc mật khẩu không hợp lệ', null, 401)
     }
 
-    const token = await signJwt({ user_id: user.id, username: user.username }) 
+    const token = await signJwt({ user_id: user.id, username: user.username })
 
     return createResponse('Thành công', {
       token: token,
