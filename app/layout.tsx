@@ -8,8 +8,6 @@ import './globals.css'
 import moment from 'moment-timezone'
 import './styles.css';
 import { auth } from '@/auth';
-import StoryPreferenceModal from '@/components/home/story-preference-modal';
-
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -34,7 +32,6 @@ export default async function RootLayout({
       >
         <NextTopLoader showSpinner={false} />
         <Providers session={session}>
-          <StoryPreferenceModal />
           <Toaster />
           {children}
         </Providers>
