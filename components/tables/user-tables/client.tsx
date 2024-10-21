@@ -10,24 +10,24 @@ import { useRouter } from 'next/navigation';
 import { columns } from './columns';
 import { createAxiosInstance } from '@/utils';
 
-interface ProductsClientProps {}
+interface ProductsClientProps { }
 
 export const UserClient: React.FC<ProductsClientProps> = (props) => {
   const router = useRouter();
   const [Users, setUsers] = useState<User[]>([])
-  const axiosInstance = createAxiosInstance()
-  
-  const fetchData = async () => {
-    
+  // const axiosInstance = createAxiosInstance()
 
-    try {
-      const response = await axiosInstance.post('/api/admin/user');
-      setUsers(response.data);
-    } catch (err) {
-      console.error(new Error('Failed to fetch data'));
+  // const fetchData = async () => {
 
-    }
-  };
+
+  //   try {
+  //     const response = await axiosInstance.post('/api/admin/user');
+  //     setUsers(response.data);
+  //   } catch (err) {
+  //     console.error(new Error('Failed to fetch data'));
+
+  //   }
+  // };
 
   /* useEffect(() => {
     // Gọi API để lấy danh sách tài khoản
@@ -40,14 +40,14 @@ export const UserClient: React.FC<ProductsClientProps> = (props) => {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Users (${data.length})`}
-          description="Manage users (Client side table functionalities.)"
+          title={`Nhân viên`}
+          description=""
         />
         <Button
           className="text-xs md:text-sm"
           onClick={() => router.push(`/admin/user/new`)}
         >
-          <Plus className="mr-2 h-4 w-4" /> Add New
+          <Plus className="mr-2 h-4 w-4" /> Thêm mới
         </Button>
       </div>
       <Separator />

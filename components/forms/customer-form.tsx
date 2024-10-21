@@ -42,9 +42,9 @@ const formSchema = z.object({
     .string()
     .min(3, { message: 'Họ và tên phải lớn hơn 3 ký tự' }),
 
-  email: z
+  link: z
     .string()
-    .email({ message: 'Email không đúng định dạng' }),
+    .url({ message: 'Liên kết không đúng định dạng URL' }),
 
   mobile: z
     .string()
@@ -52,14 +52,14 @@ const formSchema = z.object({
     .length(10, { message: 'Số điện thoại phải đúng 10 chữ số' }),
 });
 
-type ProductFormValues = z.infer<typeof formSchema>;
+type CustomerFormValues = z.infer<typeof formSchema>;
 
-interface ProductFormProps {
+interface CustomerFormProps {
   initialData: any | null;
   categories: any;
 }
 
-export const EmployeeForm: React.FC<ProductFormProps> = ({
+export const CustomerForm: React.FC<CustomerFormProps> = ({
   initialData,
   categories
 }) => {
@@ -68,24 +68,24 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const title = initialData ? 'Cập nhật nhân viên' : 'Thêm mới nhân viên';
-  const toastMessage = initialData ? 'Cập nhật nhân viên thành công.' : 'Thêm mới nhân viên thành công.';
+  const title = initialData ? 'Cập nhật khách hàng' : 'Thêm mới khách hàng';
+  const toastMessage = initialData ? 'Cập nhật khách hàng thành công.' : 'Thêm mới khách hàng thành công.';
   const action = initialData ? 'Cập nhật' : 'Thêm mới';
 
   const defaultValues = initialData
     ? initialData
     : {
       full_name: '',
-      email: '',
+      link: '',
       mobile: '',
     };
 
-  const form = useForm<ProductFormValues>({
+  const form = useForm<CustomerFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues
   });
 
-  const onSubmit = async (data: ProductFormValues) => {
+  const onSubmit = async (data: CustomerFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
@@ -155,11 +155,11 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
               name="full_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Họ và tên</FormLabel>
+                  <FormLabel>Tên Fb/Zalo</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Nhập họ và tên"
+                      placeholder="Nhập tên fb/zalo"
                       {...field}
                     />
                   </FormControl>
@@ -169,15 +169,14 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="email"
+              name="link"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Link</FormLabel>
                   <FormControl>
                     <Input
-                      type={'email'}
                       disabled={loading}
-                      placeholder="Nhập email"
+                      placeholder="Nhập link fb/zalo"
                       {...field}
                     />
                   </FormControl>

@@ -11,8 +11,8 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
 const breadcrumbItems = [
-  { title: 'Trang chủ', link: '/dashboard' },
-  { title: 'Nhân viên', link: '/admin/employee' }
+  { title: 'Dashboard', link: '/admin' },
+  { title: 'Employee', link: '/admin/employee' }
 ];
 
 type paramsProps = {
@@ -29,7 +29,7 @@ export default async function page({ searchParams }: paramsProps) {
 
   // const res = await fetch(
   //   `https://api.slingacademy.com/v1/sample-data/users?offset=${offset}&limit=${pageLimit}` +
-  //     (country ? `&search=${country}` : '')
+  //   (country ? `&search=${country}` : '')
   // );
   // const employeeRes = await res.json();
   // const totalUsers = employeeRes.total_users; //1000
@@ -42,15 +42,15 @@ export default async function page({ searchParams }: paramsProps) {
 
         <div className="flex items-start justify-between">
           <Heading
-            title={`Danh sách nhân viên`}
-            description=""
+            title={`Employee`}
+            description="Manage employees (Server side table functionalities.)"
           />
 
           <Link
             href={'/admin/employee/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
-            <Plus className="mr-2 h-4 w-4" /> Thêm mới
+            <Plus className="mr-2 h-4 w-4" /> Add New
           </Link>
         </div>
         <Separator />

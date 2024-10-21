@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 const breadcrumbItems = [
   { title: 'Trang chủ', link: '/dashboard' },
-  { title: 'Nhân viên', link: '/admin/employee' }
+  { title: 'Khách hàng', link: '/admin/customer' }
 ];
 
 type paramsProps = {
@@ -42,12 +42,12 @@ export default async function page({ searchParams }: paramsProps) {
 
         <div className="flex items-start justify-between">
           <Heading
-            title={`Danh sách nhân viên`}
+            title={`Danh sách khách hàng`}
             description=""
           />
 
           <Link
-            href={'/admin/employee/new'}
+            href={'/admin/customer/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
             <Plus className="mr-2 h-4 w-4" /> Thêm mới
@@ -55,14 +55,6 @@ export default async function page({ searchParams }: paramsProps) {
         </div>
         <Separator />
 
-        {/* <EmployeeTable
-          searchKey="country"
-          pageNo={page}
-          columns={columns}
-          totalUsers={totalUsers}
-          data={employee}
-          pageCount={pageCount}
-        /> */}
       </div>
     </PageContainer>
   );

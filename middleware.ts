@@ -59,7 +59,8 @@ export async function middleware(req: NextRequest) {
     }
 
     // Redirect for non-API requests
-    return NextResponse.redirect(new URL('/admin/signin', req.url))
+    // return NextResponse.redirect(new URL('/admin/signin', req.url))
+    return null
   }
 
   const token = authHeader.split(' ')[1] // Extract the token from "Bearer <token>"
@@ -71,7 +72,7 @@ export async function middleware(req: NextRequest) {
 
     // Proceed with the request
     setCookie('sessionId', sessionId, { httpOnly: true, secure: NODE_ENV === 'production' })
-    
+
     // Token is valid, proceed with the request
     return NextResponse.next()
   } catch (error) {
@@ -80,7 +81,7 @@ export async function middleware(req: NextRequest) {
     }
 
     // Redirect to login page for non-API requests
-    return NextResponse.redirect(new URL('/admin/signin', req.url))
+    // return NextResponse.redirect(new URL('/admin/signin', req.url))
   }
 }
 

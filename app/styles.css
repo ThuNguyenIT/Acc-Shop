@@ -1,19 +1,13 @@
-.bottom-dashed {
-  border-bottom: 1px dashed #999;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
+
+/* Ẩn spinner trong Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-.modal-story-preference > button {
-  display: none;
+
+/* Ẩn spinner trong Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
-.nav-link:hover {
-  background-color: transparent;
-}
-.image-story {
-  width: 80px;
-  flex: 0 0 80px;
-}
-.detail-story {
-  max-width: calc(100% - 80px);
-  flex: 0 0 calc(100% - 80px);
-}
+
