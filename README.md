@@ -152,11 +152,11 @@ curl -X GET http://localhost:3001/api/crawl \
   -H "Content-Type: application/json"
 
 <!-- Đăng nhập -->
-curl -X POST http://localhost:3001/api/auth/login \
+curl -X POST http://localhost:3001/api/admin/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "jelyqs",
-    "password": "123123"
+    "email": "adminsystem@gmail.com",
+    "password": "1234567a"
   }'
 
 <!-- Tạo role -->

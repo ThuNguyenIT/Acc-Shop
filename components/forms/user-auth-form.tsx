@@ -1,48 +1,48 @@
-'use client';
-import { Button } from '@/components/ui/button';
+"use client";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Nhập hợp lệ địa chỉ email' }),
-  password: z.string()
-    .min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
+  email: z.string().email({ message: "Nhập hợp lệ địa chỉ email" }),
+  password: z.string().min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" }),
 });
 
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl');
+  const callbackUrl = searchParams.get("callbackUrl");
   const [loading, setLoading] = useState(false);
   const defaultValues = {
-    email: 'demo@gmail.com',
-    password: ''
+    email: "adminsystem@gmail.com",
+    password: "",
   };
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
-    defaultValues
+    defaultValues,
   });
 
   const onSubmit = async (data: UserFormValue) => {
-    console.log(data)
-    // signIn('credentials', {
-    //   email: data.email,
-    //   callbackUrl: callbackUrl ?? '/admin'
-    // });
+    signIn("credentials", {
+      // redirect: false,
+      email: data.email,
+      password: data.password,
+      // callbackUrl: callbackUrl ?? "/admin",
+    });
   };
 
   return (
@@ -50,18 +50,18 @@ export default function UserAuthForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-2"
+          className='w-full space-y-2'
         >
           <FormField
             control={form.control}
-            name="email"
+            name='email'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    type="email"
-                    placeholder="Nhập email..."
+                    type='email'
+                    placeholder='Nhập email...'
                     disabled={loading}
                     {...field}
                   />
@@ -72,15 +72,16 @@ export default function UserAuthForm() {
           />
           <FormField
             control={form.control}
-            name="password"
+            name='password'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Mật khẩu</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Nhập mật khẩu"
+                    placeholder='Nhập mật khẩu'
                     disabled={loading}
                     {...field}
+                    type='password'
                   />
                 </FormControl>
                 <FormMessage />
@@ -88,7 +89,7 @@ export default function UserAuthForm() {
             )}
           />
 
-          <Button disabled={loading} className="ml-auto w-full" type="submit">
+          <Button disabled={loading} className='ml-auto w-full' type='submit'>
             Đăng nhập
           </Button>
         </form>
