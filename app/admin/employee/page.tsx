@@ -34,6 +34,7 @@ type paramsProps = {
 interface IState {
   currentPage: number
   totalPages: number
+  totalEmployee: number
   loading: boolean
   employees: User[]
 }
@@ -44,6 +45,7 @@ export default function Page({ searchParams }: paramsProps) {
   const [state, setState] = useState<IState>({
     currentPage: 1,
     totalPages: 0,
+    totalEmployee: 0,
     loading: true,
     employees: []
   });
@@ -63,7 +65,8 @@ export default function Page({ searchParams }: paramsProps) {
         currentPage: data.data.currentPage,
         totalPages: data.data.totalPages,
         loading: false,
-        employees: data.data.employees
+        employees: data.data.employees,
+        totalEmployee: data.data.totalEmployee
       }));
     }
 
@@ -132,7 +135,7 @@ export default function Page({ searchParams }: paramsProps) {
         </Table>
         <div className="flex items-center justify-between">
           <div>
-            Hiển thị {state.employees.length} của {state.totalPages} khách hàng
+            Hiển thị 1 đến {state.employees.length} trong số {state.totalEmployee} mục
           </div>
           <div className="flex items-center space-x-2">
             <Button
