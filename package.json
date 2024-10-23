@@ -7,7 +7,7 @@
     "url": "https://github.com/jelyqs"
   },
   "scripts": {
-    "dev": "cross-env PORT=3001 next dev",
+    "dev": "cross-env PORT=3002 next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -75,7 +75,7 @@
     "moment-timezone": "^0.5.45",
     "mysql2": "^3.11.2",
     "next": "^14.2.3",
-    "next-auth": "^5.0.0-beta.18",
+    "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.2.1",
     "nextjs-toploader": "^1.6.12",
     "postcss": "8.4.28",

@@ -9,17 +9,23 @@ datasource db {
 
 model users {
   id              Int               @id @default(autoincrement())
-  type_user       Int               @default(5) // Loại tài khoản: 1 - Admin system | 2 - Manager | 3 - Employee | 4 - Technician | 5 - Client
+  parent_id       Int?
+  type_user       Int               @default(5) // Loại tài khoản: 0 - Admin system | 1 - Admin | 2 - Manager | 3 - Employee | 4 - Technician | 5 - Client
   email           String            @unique
   mobile          String?           @unique
   password        String
+  avatar          String?
   is_verified     Boolean           @default(false)
   status          Boolean           @default(true)
   full_name       String?
-  social_nextwork Json?
+  social_network Json?
 
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
+
+  // Quan hệ self-referencing cho parent-child
+  parent         users?             @relation("userChildren", fields: [parent_id], references: [id])
+  children       users[]            @relation("userChildren")
 
   user_activities user_activities[]
   model_has_roles model_has_roles[]

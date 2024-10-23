@@ -1,14 +1,16 @@
 -- CreateTable
 CREATE TABLE `users` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `parent_id` INTEGER NULL,
     `type_user` INTEGER NOT NULL DEFAULT 5,
     `email` VARCHAR(191) NOT NULL,
     `mobile` VARCHAR(191) NULL,
     `password` VARCHAR(191) NOT NULL,
+    `avatar` VARCHAR(191) NULL,
     `is_verified` BOOLEAN NOT NULL DEFAULT false,
     `status` BOOLEAN NOT NULL DEFAULT true,
     `full_name` VARCHAR(191) NULL,
-    `social_nextwork` JSON NULL,
+    `social_network` JSON NULL,
     `created_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NULL,
 
@@ -27,7 +29,6 @@ CREATE TABLE `roles` (
     `updated_at` DATETIME(3) NULL,
 
     UNIQUE INDEX `roles_name_key`(`name`),
-    UNIQUE INDEX `roles_guard_name_key`(`guard_name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -108,10 +109,10 @@ CREATE TABLE `platforms` (
     `password` VARCHAR(191) NULL,
     `mail_recovery` VARCHAR(191) NULL,
     `country` VARCHAR(191) NULL,
-    `origin_price` DECIMAL(16, 2) NOT NULL,
+    `origin_price` DECIMAL(16, 2) NULL,
     `price` DECIMAL(16, 2) NOT NULL,
     `percent_discount` DOUBLE NULL,
-    `final_price` DECIMAL(16, 2) NOT NULL,
+    `final_price` DECIMAL(16, 2) NULL,
     `createdAt` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NULL,
 
@@ -142,6 +143,9 @@ CREATE TABLE `orders` (
     UNIQUE INDEX `orders_order_code_key`(`order_code`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `users` ADD CONSTRAINT `users_parent_id_fkey` FOREIGN KEY (`parent_id`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `role_has_permissions` ADD CONSTRAINT `role_has_permissions_role_id_fkey` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

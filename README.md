@@ -147,9 +147,45 @@ Dự án này được cấp phép dưới giấy phép [MIT License](./LICENSE)
 
 README này cung cấp một hướng dẫn chi tiết cho người phát triển và người dùng về cách cài đặt, cấu hình, và đóng góp cho dự án. Bạn có thể điều chỉnh tùy theo tính năng và yêu cầu cụ thể của dự án của bạn.
 
-<!-- Crawl category - truyenfull  -->
-curl -X GET http://localhost:3001/api/crawl \
-  -H "Content-Type: application/json"
+<!-- Tạo role -->
+curl -X POST http://localhost:3002/api/admin/role \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImplbHlxcyIsImV4cCI6MTczMTgzNjI3NH0.FC4hjxBOTrZHgh9Nhbv5rd4-TV3uPtHk2KBf68qDt-I"
+
+<!-- Tạo user -->
+curl -X POST http://localhost:3002/api/admin/user \                                                      ✘ INT  18.18.2  2.7.3 at  02:36:06 PM
+-H "Content-Type: application/json" \
+-d '{
+  "parent_id": null,
+  "type_user": 0,
+  "email": "jely.big@gmail.com",
+  "mobile": "0359399320",
+  "password": "123123",
+  "is_verified": true,
+  "status": true,
+  "full_name": "Thu Nguyen",
+  "social_network": {
+    "facebook": "https://www.facebook.com/Jely.Big/",
+    "telegram": "https://t.me/jelyqs",
+    "zalo": "+84359399320"
+  },
+  "role_ids": [1]
+}'
+
+curl -X POST http://localhost:3002/api/admin/user \
+-H "Content-Type: application/json" \
+-d '{
+  "parent_id": null,
+  "type_user": 1,
+  "email": "admin@localhost.com",
+  "mobile": null,
+  "password": "123123",
+  "is_verified": true,
+  "status": true,
+  "full_name": "Admin",
+  "social_network": null,
+  "role_ids": [2]
+}'
 
 <!-- Đăng nhập -->
 curl -X POST http://localhost:3001/api/auth/login \
@@ -159,25 +195,6 @@ curl -X POST http://localhost:3001/api/auth/login \
     "password": "123123"
   }'
 
-<!-- Tạo role -->
-curl -X POST http://localhost:3001/api/admin/role \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImplbHlxcyIsImV4cCI6MTczMTgzNjI3NH0.FC4hjxBOTrZHgh9Nhbv5rd4-TV3uPtHk2KBf68qDt-I"
-
-<!-- Tạo user -->
-curl -X POST http://localhost:3001/api/admin/user \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImplbHlxcyIsImV4cCI6MTczMTgzNjI3NH0.FC4hjxBOTrZHgh9Nhbv5rd4-TV3uPtHk2KBf68qDt-I" \
-  -d '{
-    "username": "jelyqs",
-    "email": "jely.big@gmail.com",
-    "password": "123123",
-    "full_name": "Thu Nguyễn",
-    "mobile": "0359399320",
-    "address": "Đà Nẵng",
-    "birthday": "1995-02-03",
-    "role_ids": [1]
-  }'
 
 <!-- Lấy danh sách user -->
 curl -X GET http://localhost:3001/api/admin/user \

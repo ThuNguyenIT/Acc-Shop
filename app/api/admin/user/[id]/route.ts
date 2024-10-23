@@ -120,7 +120,7 @@ export async function DELETE(
   const sessionId = req.cookies.get('sessionId')?.value
   const { userAgent, ipAddress } = getRequestInfo(req)
 
-  await prisma.user.update({
+  await prisma.users.update({
     where: { id: parseInt(params.id) },
     data: {
       is_verified: false,

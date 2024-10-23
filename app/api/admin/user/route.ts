@@ -1,37 +1,19 @@
-import { NextRequest } from 'next/server'
-import bcrypt from 'bcryptjs'
+import { NextRequest } from "next/server";
+import bcrypt from "bcryptjs";
 
-import { prisma } from '@/lib/prisma'
-import { createResponse, getErrorMessage, getRequestInfo } from '@/lib/utils'
+import { prisma } from "@/lib/prisma";
+import { createResponse, getErrorMessage, getRequestInfo } from "@/lib/utils";
 
 export async function GET() {
   try {
     const users = await prisma.users.findMany({
       select: {
         id: true,
-        username: true,
         email: true,
         is_verified: true,
         status: true,
         full_name: true,
         mobile: true,
-        address: true,
-        birthday: true,
-        user_point: {
-          select: {
-            point: true,
-            bonus: true
-          }
-        },
-        user_roles: {
-          select: {
-            role: {
-              select: {
-                role: true
-              }
-            }
-          }
-        }
         /* user_activity: true,
         author: true,
         comments: true,
@@ -44,82 +26,83 @@ export async function GET() {
         bookmark: true,
         audit_log: true,
         report: true */
-      }
-    })
+      },
+    });
 
-    return createResponse('Thành công', users)
+    return createResponse("Thành công", users);
   } catch (error) {
-    return createResponse(getErrorMessage(error), null, 500)
+    return createResponse(getErrorMessage(error), null, 500);
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const {
-      username,
+      parent_id,
+      type_user,
       email,
-      password,
-      full_name,
       mobile,
-      address,
-      birthday,
-      role_ids
-    } = await request.json()
+      password,
+      is_verified,
+      status,
+      full_name,
+      social_network,
+      role_ids,
+    } = await request.json();
 
-    const user = await prisma.users.findFirst({
+    const existingUser = await prisma.users.findFirst({
       where: {
-        OR: [{ username: username }, { email: email }]
-      }
-    })
+        OR: [{ email: email }],
+      },
+    });
 
-    if (user) {
-      return createResponse('Username hoặc email đã tồn tại', null, 400)
+    if (existingUser) {
+      return createResponse("Email đã tồn tại", null, 400);
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10)
-    const parsedBirthday = birthday ? new Date(birthday) : null
-    const { userAgent, ipAddress } = getRequestInfo(request)
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const { userAgent, ipAddress } = getRequestInfo(request);
+
+    const userData: any = {
+      type_user: type_user ?? 5,
+      email,
+      mobile: mobile ?? null,
+      password: hashedPassword,
+      is_verified: is_verified ?? true,
+      status: status ?? true,
+      full_name,
+      social_network: social_network ?? null,
+      user_activities: {
+        create: {
+          action: "USER_CREATE",
+          description: "Tạo mới tài khoản",
+          ip_address: ipAddress,
+          user_agent: userAgent,
+          session_id: "",
+        },
+      },
+    };
+
+    if (parent_id) {
+      userData.parent_id = parent_id;
+    }
 
     const newUser = await prisma.users.create({
-      data: {
-        username,
-        email,
-        password: hashedPassword,
-        full_name,
-        mobile,
-        address,
-        birthday: parsedBirthday,
-        is_verified: false,
-        user_point: {
-          create: {
-            bonus: 0,
-            point: 0
-          }
-        },
-        user_activities: {
-          create: {
-            action: 'USER_CREATE',
-            description: 'Tạo mới tài khoản',
-            ip_address: ipAddress,
-            user_agent: userAgent,
-            session_id: ''
-          }
-        }
-      }
-    })
+      data: userData,
+    });
 
     if (Array.isArray(role_ids) && role_ids.length > 0) {
-      await prisma.user_roles.createMany({
+      await prisma.model_has_roles.createMany({
         data: role_ids.map((roleId) => ({
           user_id: newUser.id,
-          role_id: roleId
-        }))
-      })
+          role_id: roleId,
+        })),
+      });
     }
 
-    const { password: _, ...userWithoutPassword } = newUser
-    return createResponse('Thành công', userWithoutPassword)
+    const { password: _, ...userWithoutPassword } = newUser;
+    return createResponse("Thành công", userWithoutPassword);
   } catch (error) {
-    return createResponse(getErrorMessage(error), null, 500)
+    return createResponse(getErrorMessage(error), null, 500);
   }
 }

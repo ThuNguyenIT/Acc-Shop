@@ -27,7 +27,6 @@ export const LoginForm: React.FC<ILoginForm> = ({ handleCloseAuthModal }) => {
     })
 
     function onSubmit(data: z.infer<typeof LoginSchema>) {
-        console.log('onSubmit', data)
         setUser({
             id: 10, username: 'vuha',
             email: data.email,

@@ -72,7 +72,6 @@ export default function Navbar() {
   }, [handleSetStateField]);
   const handleLogout = () => {
     // Implement your logout logic here
-    console.log("User logged out", typeof user, user);
     logout();
   };
 

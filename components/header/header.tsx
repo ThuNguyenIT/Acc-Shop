@@ -27,7 +27,6 @@ export default function Header() {
         );
       const { data } = response;
       if (data?.message === "Success") {
-        console.log('hihi');
         
         setCategory(data.data);
       }

@@ -34,7 +34,6 @@ export const RegisterForm: React.FC<IRegisterForm> = ({ handleCloseAuthModal }) 
     })
 
     function onSubmit(data: z.infer<typeof RegisterSchema>) {
-        console.log('onSubmit', data)
         handleCloseAuthModal()
     }
 

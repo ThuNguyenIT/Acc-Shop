@@ -4,7 +4,7 @@ const nextConfig = {
     DATABASE_URL: process.env.DATABASE_URL,
   },
   images: {
-    domains: ["utfs.io", "static.truyenfull.io", "lh3.googleusercontent.com"],
+    domains: ["utfs.io", "lh3.googleusercontent.com"],
   },
 };
 
