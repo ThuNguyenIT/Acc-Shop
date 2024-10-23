@@ -1,27 +1,27 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { User } from '@/types';
-
+import { create } from "zustand";
+import { persist, PersistOptions } from "zustand/middleware";
+import { IUser } from "@/types";
 
 export type AuthState = {
-    user: User | null;
+  user: IUser | null;
+};
 
-};
 export type AuthActions = {
-    setUser: (user: User) => void;
-    logout: () => void;
+  setUser: (user: IUser) => void;
+  logout: () => void;
 };
-export const useAuthStore = create<AuthState & AuthActions>()(
-    persist(
-        (set) => ({
-            user: null,
-            setUser: (user: User) => {
-                set({ user });
-            },
-            logout: () => {
-                set({ user: null });
-            }
-        }),
-        { name: 'auth-store' }
-    )
+
+type AuthStore = AuthState & AuthActions;
+
+export const useAuthStore = create<AuthStore>()(
+  persist<AuthStore>(
+    (set) => ({
+      user: null,
+      setUser: (user: IUser) => set({ user }),
+      logout: () => set({ user: null }),
+    }),
+    {
+      name: "auth-store",
+    } as PersistOptions<AuthStore>
+  )
 );

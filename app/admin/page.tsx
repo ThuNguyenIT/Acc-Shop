@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import { AreaGraph } from '@/components/charts/area-graph';
 import { BarGraph } from '@/components/charts/bar-graph';
 import { PieGraph } from '@/components/charts/pie-graph';
@@ -13,8 +14,15 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { redirect } from 'next/navigation';
 
-export default function page() {
+export default async function Dashboard() {
+  const session = await auth();
+
+  if (!session?.user) {
+    return redirect('/auth/signin')
+  }
+
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-2">
