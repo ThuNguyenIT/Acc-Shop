@@ -18,3 +18,8 @@ export interface IUser {
   seller_orders?: IOrder[];
   buyer_orders?: IOrder[];
 }
+
+export interface IPostAddEmPloyeeResponse {
+  message: string;
+  data: User;
+}
