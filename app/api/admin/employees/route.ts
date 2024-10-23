@@ -36,12 +36,17 @@ export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
     const page = parseInt(searchParams.get("page") || "1");
-    const story_id = searchParams.get("story_id");
-    const pageSize = 10; // Số lượng chương mỗi trang
+    const limit = parseInt(searchParams.get("limit") || "20");
+    const searchTerm = searchParams.get("search") || "";
+
+    const pageSize = limit;
     const skip = (page - 1) * pageSize;
     const employees = await prisma.users.findMany({
       where: {
         type_user: 3,
+        full_name: {
+          contains: searchTerm,
+        },
       },
       select: {
         id: true,

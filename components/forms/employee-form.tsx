@@ -20,6 +20,7 @@ import * as z from "zod";
 import { useToast } from "../ui/use-toast";
 import { createAxiosInstance } from "@/utils/axiosInstance";
 import { PostAddEmPloyeeResponse } from "@/types";
+import { AlertModal } from "../modal/alert-modal";
 
 const formSchema = z.object({
   full_name: z.string().min(3, { message: "Họ và tên phải lớn hơn 3 ký tự" }),
@@ -43,14 +44,13 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({ initialData }) => {
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const title = initialData ? "Cập nhật nhân viên" : "Thêm mới nhân viên";
   const toastMessage = initialData
     ? "Cập nhật nhân viên thành công."
     : "Thêm mới nhân viên thành công.";
   const action = initialData ? "Cập nhật" : "Thêm mới";
-
+  console.log("initialData", initialData);
   const defaultValues = initialData
     ? initialData
     : {
@@ -68,7 +68,7 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
+        // await axios.post(`/api/admin/employees/edit-product/${initialData._id}`, data);
       } else {
         const response = await axiosInstance.post<PostAddEmPloyeeResponse>(
           "/api/admin/employees",
@@ -97,33 +97,10 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({ initialData }) => {
     }
   };
 
-  const onDelete = async () => {
-    try {
-      setLoading(true);
-      //   await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
-      router.refresh();
-      router.push(`/${params.storeId}/products`);
-    } catch (error: any) {
-    } finally {
-      setLoading(false);
-      setOpen(false);
-    }
-  };
-
   return (
     <>
       <div className='flex items-center justify-between'>
         <Heading title={title} description={""} />
-        {initialData && (
-          <Button
-            disabled={loading}
-            variant='destructive'
-            size='sm'
-            onClick={() => setOpen(true)}
-          >
-            <Trash className='h-4 w-4' />
-          </Button>
-        )}
       </div>
       <Separator />
       <Form {...form}>

@@ -1,14 +1,14 @@
-import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
-import { columns } from "@/components/tables/employee-tables/columns";
-import { EmployeeTable } from "@/components/tables/employee-tables/employee-table";
-import { buttonVariants } from "@/components/ui/button";
+import { DataTable } from "./data-table";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Heading } from "@/components/ui/heading";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { createAxiosInstance } from "@/utils/axiosInstance";
-import { Plus } from "lucide-react";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { createAxiosInstance } from "@/utils/axiosInstance";
+import { _columns } from "./_columns";
 
 interface demoPageProp {
   searchParams: { [key: string]: string };
@@ -20,8 +20,6 @@ const breadcrumbItems = [
 ];
 
 export default async function Page({ searchParams }: demoPageProp) {
-  const country = searchParams.search || null;
-
   const axiosInstance = createAxiosInstance();
   if (Object.keys(searchParams).length === 0) {
     searchParams["skip"] = "0";
@@ -34,18 +32,15 @@ export default async function Page({ searchParams }: demoPageProp) {
     )
     .join("&");
 
-  const response = await axiosInstance.get(
-    `/api/admin/employees?${searchStr}` + (country ? `&search=${country}` : "")
-  );
+  const response = await axiosInstance.get(`/api/admin/employees?${searchStr}`);
   let data = await response.data;
   let userData = data.data.employees;
-  let totalUsers = data.data.totalEmployee;
-  let pageCount = data.data.totalPages;
+  let total = data.data.totalEmployee;
+
   return (
-    <PageContainer>
+    <PageContainer scrollable={true}>
       <div className='space-y-4'>
         <Breadcrumbs items={breadcrumbItems} />
-
         <div className='flex items-start justify-between'>
           <Heading title={`Danh sách nhân viên`} description='' />
 
@@ -57,15 +52,7 @@ export default async function Page({ searchParams }: demoPageProp) {
           </Link>
         </div>
         <Separator />
-
-        <EmployeeTable
-          searchKey='full_name'
-          pageNo={1}
-          columns={columns}
-          totalUsers={totalUsers}
-          data={userData}
-          pageCount={pageCount}
-        />
+        <DataTable columns={_columns} data={userData} total={total} />
       </div>
     </PageContainer>
   );

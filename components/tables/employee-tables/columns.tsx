@@ -1,51 +1,28 @@
-'use client';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Employee } from '@/constants/data';
-import { ColumnDef } from '@tanstack/react-table';
-import { CellAction } from './cell-action';
+"use client";
+import { Employee } from "@/constants/data";
+import { ColumnDef } from "@tanstack/react-table";
+import { CellAction } from "./cell-action";
 
 export const columns: ColumnDef<Employee>[] = [
   {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    id: "select",
     enableSorting: false,
-    enableHiding: false
+    enableHiding: false,
   },
   {
-    accessorKey: 'first_name',
-    header: 'NAME'
+    accessorKey: "full_name",
+    header: "Họ và tên",
   },
   {
-    accessorKey: 'country',
-    header: 'COUNTRY'
+    accessorKey: "mobile",
+    header: "Số điện thoại",
   },
   {
-    accessorKey: 'email',
-    header: 'EMAIL'
+    accessorKey: "email",
+    header: "Email",
   },
   {
-    accessorKey: 'job',
-    header: 'COMPANY'
+    id: "actions",
+    cell: ({ row }) => <CellAction data={row.original} />,
   },
-  {
-    accessorKey: 'gender',
-    header: 'GENDER'
-  },
-  {
-    id: 'actions',
-    cell: ({ row }) => <CellAction data={row.original} />
-  }
 ];
