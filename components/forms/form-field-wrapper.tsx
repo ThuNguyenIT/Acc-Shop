@@ -11,12 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Control } from "react-hook-form";
 
 interface FormFieldWrapperProps {
-  control: Control<any>; // Thay đổi type này nếu cần
+  control: Control<any>;
   name: string;
   label: string;
   placeholder: string;
-  type?: string; // Thêm loại nếu cần
+  type?: string;
   disabled?: boolean;
+  formatCurrency?: boolean;
 }
 
 const FormFieldWrapper: React.FC<FormFieldWrapperProps> = ({
@@ -26,7 +27,14 @@ const FormFieldWrapper: React.FC<FormFieldWrapperProps> = ({
   placeholder,
   type = "text",
   disabled = false,
+  formatCurrency = false,
 }) => {
+  const formatCurrencyValue = (value: string) => {
+    const numberString = value.replace(/[^0-9]/g, '');
+    if (!numberString) return '';
+
+    return Number(numberString).toLocaleString('en-US');
+  };
   return (
     <FormField
       control={control}
@@ -40,6 +48,14 @@ const FormFieldWrapper: React.FC<FormFieldWrapperProps> = ({
               placeholder={placeholder}
               type={type}
               {...field}
+              onChange={(e) => {
+                if (formatCurrency) {
+                  const formattedValue = formatCurrencyValue(e.target.value);
+                  field.onChange(formattedValue);
+                } else {
+                  field.onChange(e.target.value);
+                }
+              }}
             />
           </FormControl>
           <FormMessage />

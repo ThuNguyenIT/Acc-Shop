@@ -39,10 +39,10 @@ export default async function Page({ searchParams }: demoPageProp) {
     `/admin/platform?${searchStr}` + (name ? `&search=${name}` : "")
   );
   let data = await response.data;
-  let userData = data;
-  let totalUsers = 0;
-  let pageCount = 1;
-  let currentPage = 1;
+  const { platforms, total, totalPages, currentPage } = data.data
+  let userData = platforms;
+  let totalUsers = total;
+  let pageCount = totalPages;
   return (
     <PageContainer>
       <div className='space-y-4'>

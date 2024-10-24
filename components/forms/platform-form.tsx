@@ -31,13 +31,13 @@ const formSchema = z.object({
     .string()
     .regex(/^\d+(\.\d{1,2})?$/, {
       message:
-        "Giá gốc không hợp lệ, chỉ chấp nhận số thập phân tối đa 2 chữ số sau dấu phẩy",
+        "Giá gốc không hợp lệ",
     })
     .optional(),
 
   price: z.string().regex(/^\d+(\.\d{1,2})?$/, {
     message:
-      "Giá bán không hợp lệ, chỉ chấp nhận số thập phân tối đa 2 chữ số sau dấu phẩy",
+      "Giá bán không hợp lệ",
   }),
 
   percent_discount: z
@@ -55,7 +55,7 @@ const formSchema = z.object({
     .string()
     .regex(/^\d+(\.\d{1,2})?$/, {
       message:
-        "Giá cuối cùng không hợp lệ, chỉ chấp nhận số thập phân tối đa 2 chữ số sau dấu phẩy",
+        "Giá cuối cùng không hợp lệ",
     })
     .optional(),
 });
@@ -75,16 +75,16 @@ export const PlatformForm: React.FC<PlatformFormProps> = ({ initialData }) => {
   const defaultValues = initialData
     ? initialData
     : {
-        name: "",
-        source: "",
-        password: "",
-        mail_recovery: "",
-        country: "",
-        origin_price: "",
-        price: "",
-        percent_discount: 0,
-        final_price: "",
-      };
+      name: "",
+      source: "",
+      password: "",
+      mail_recovery: "",
+      country: "",
+      origin_price: "",
+      price: "",
+      percent_discount: 0,
+      final_price: "",
+    };
 
   const form = useForm<PlatformFormValues>({
     resolver: zodResolver(formSchema),

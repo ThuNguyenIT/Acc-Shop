@@ -24,7 +24,8 @@ export interface GetPlatformsResponse {
   message: string;
   data: {
     platforms: IPlatform[];
-    // totalPlatforms: number;
-    // totalPages: number;
+    currentPage: number;
+    totalPages: number;
+    total: number;
   };
 }
