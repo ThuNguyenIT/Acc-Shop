@@ -19,3 +19,12 @@ export interface IPostAddPlatformResponse {
   message: string;
   data: IPlatform;
 }
+
+export interface GetPlatformsResponse {
+  message: string;
+  data: {
+    platforms: IPlatform[];
+    // totalPlatforms: number;
+    // totalPages: number;
+  };
+}

@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { GetPlatformsResponse } from "@/types";
 import { createAxiosInstance } from "@/utils/axiosInstance";
 import { Plus } from "lucide-react";
 import Link from "next/link";
@@ -34,14 +35,14 @@ export default async function Page({ searchParams }: demoPageProp) {
     )
     .join("&");
 
-  const response = await axiosInstance.get(
+  const response = await axiosInstance.get<GetPlatformsResponse>(
     `/admin/platform?${searchStr}` + (name ? `&search=${name}` : "")
   );
   let data = await response.data;
-  let userData = data.data;
-  let totalUsers = data.data.totalCustomer;
-  let pageCount = data.data.totalPages;
-  let currentPage = data.data.currentPage;
+  let userData = data;
+  let totalUsers = 0;
+  let pageCount = 1;
+  let currentPage = 1;
   return (
     <PageContainer>
       <div className='space-y-4'>
