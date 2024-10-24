@@ -28,7 +28,7 @@ export default function Sidebar({ className }: SidebarProps) {
     >
       <div className="hidden p-5 pt-10 lg:block">
         <Link
-          href={'https://github.com/ThuNguyenIT/next-shadcn-stories'}
+          href={'/admin'}
           target="_blank"
         >
           <svg
