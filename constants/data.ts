@@ -55,6 +55,12 @@ export const navItems: NavItem[] = [
     label: "laptop",
   },
   {
+    title: "Permission",
+    href: "/admin/permission",
+    icon: "folderTree",
+    label: "folderTree",
+  },
+  {
     title: "Profile",
     href: "/admin/profile",
     icon: "profile",

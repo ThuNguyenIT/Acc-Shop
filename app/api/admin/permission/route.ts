@@ -2,10 +2,23 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createResponse, getErrorMessage } from "@/lib/utils";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const permissions = await prisma.permissions.findMany();
-    return createResponse("Thành công", permissions);
+    const searchParams = req.nextUrl.searchParams;
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "20");
+    const skip = (page - 1) * limit;
+    const permissions = await prisma.permissions.findMany({
+      skip,
+      take: limit,
+    });
+    const total = await prisma.permissions.count();
+    return createResponse("Thành công", {
+      permissions,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      total: total,
+    });
   } catch (error) {
     return createResponse(getErrorMessage(error), null, 500);
   }

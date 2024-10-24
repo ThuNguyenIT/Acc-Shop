@@ -14,3 +14,17 @@ export interface IPermission {
   updated_at?: Date;
   role_permissions?: IRoleHasPermission[];
 }
+
+export interface GetPermissionResponse {
+  message: string;
+  data: {
+    permissions: IPermission[];
+    currentPage: number;
+    totalPages: number;
+    total: number;
+  };
+}
+export interface IPostAddPermissionResponse {
+  message: string;
+  data: IPermission;
+}
