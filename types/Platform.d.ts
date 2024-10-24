@@ -14,3 +14,8 @@ export interface IPlatform {
   accounts?: IShopAccount[];
   orders?: IOrder[];
 }
+
+export interface IPostAddPlatformResponse {
+  message: string;
+  data: IPlatform;
+}
