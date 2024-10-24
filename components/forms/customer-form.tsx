@@ -21,54 +21,51 @@ import { IPostAddEmPloyeeResponse } from "@/types";
 import { Switch } from "@/components/ui/switch";
 
 const formSchema = z.object({
-  full_name: z
-    .string()
-    .min(3, { message: 'Họ và tên phải lớn hơn 3 ký tự' }),
+  full_name: z.string().min(3, { message: "Họ và tên phải lớn hơn 3 ký tự" }),
   email: z.string().email({ message: "Email không đúng định dạng" }),
-  link: z
-    .string()
-    .url({ message: 'Liên kết không đúng định dạng URL' }),
+  link: z.string().url({ message: "Liên kết không đúng định dạng URL" }),
 
   mobile: z
     .string()
-    .regex(/^\d+$/, { message: 'Số điện thoại chỉ được chứa chữ số' })
-    .length(10, { message: 'Số điện thoại phải đúng 10 chữ số' }),
+    .regex(/^\d+$/, { message: "Số điện thoại chỉ được chứa chữ số" })
+    .min(10, { message: "Số điện thoại phải có ít nhất 10 chữ số" })
+    .max(11, { message: "Số điện thoại không được vượt quá 11 chữ số" }),
   status: z.boolean().optional(),
 });
 
-type ProductFormValues = z.infer<typeof formSchema>;
+type CustomerFormValues = z.infer<typeof formSchema>;
 
-interface ProductFormProps {
+interface CustomerFormProps {
   initialData: any | null;
 }
 
-export const CustomerForm: React.FC<ProductFormProps> = ({ initialData }) => {
+export const CustomerForm: React.FC<CustomerFormProps> = ({ initialData }) => {
   const axiosInstance = createAxiosInstance();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Cập nhật nhân viên" : "Thêm mới nhân viên";
+  const title = initialData ? "Cập nhật khách hàng" : "Thêm mới khách hàng";
   const action = initialData ? "Cập nhật" : "Thêm mới";
   const defaultValues = initialData
     ? initialData
     : {
-      full_name: '',
-      email: '',
-      link: '',
-      mobile: '',
-      status: true,
-    };
+        full_name: "",
+        email: "",
+        link: "",
+        mobile: "",
+        status: true,
+      };
 
-  const form = useForm<ProductFormValues>({
+  const form = useForm<CustomerFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
-  const onSubmit = async (_data: ProductFormValues) => {
+  const onSubmit = async (_data: CustomerFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
         const response = await axiosInstance.put<IPostAddEmPloyeeResponse>(
-          `/api/admin/employees/update`,
+          `/admin/customer/update`,
           {
             id: initialData.id,
             email: _data.email,
@@ -87,14 +84,13 @@ export const CustomerForm: React.FC<ProductFormProps> = ({ initialData }) => {
 
         if (data?.message === "Success") {
           setTimeout(() => {
-
             router.refresh();
             router.push(`/admin/customer`);
           }, 300);
         }
       } else {
         const response = await axiosInstance.post<IPostAddEmPloyeeResponse>(
-          "/api/admin/employees",
+          "/admin/customer",
           {
             email: _data.email,
             mobile: _data.mobile,
@@ -136,14 +132,14 @@ export const CustomerForm: React.FC<ProductFormProps> = ({ initialData }) => {
           <div className='gap-8 md:grid md:grid-cols-2'>
             <FormField
               control={form.control}
-              name="full_name"
+              name='full_name'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tên Fb/Zalo</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Nhập tên fb/zalo"
+                      placeholder='Nhập tên fb/zalo'
                       {...field}
                     />
                   </FormControl>
@@ -153,14 +149,14 @@ export const CustomerForm: React.FC<ProductFormProps> = ({ initialData }) => {
             />
             <FormField
               control={form.control}
-              name="link"
+              name='link'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Link</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Nhập link fb/zalo"
+                      placeholder='Nhập link fb/zalo'
                       {...field}
                     />
                   </FormControl>
@@ -210,10 +206,14 @@ export const CustomerForm: React.FC<ProductFormProps> = ({ initialData }) => {
                 control={form.control}
                 name='status'
                 render={({ field }) => (
-                  <FormItem className="flex items-center gap-x-0.5">
+                  <FormItem className='flex items-center gap-x-0.5'>
                     <FormLabel>Trạng thái</FormLabel>
                     <FormControl>
-                      <Switch style={{ margin: "0px" }} checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        style={{ margin: "0px" }}
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

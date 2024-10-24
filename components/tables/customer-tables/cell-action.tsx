@@ -11,7 +11,7 @@ import {
 import { IUser } from "@/types";
 import { createAxiosInstance } from "@/utils/axiosInstance";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 interface CellActionProps {
@@ -25,15 +25,15 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
 
   const onConfirm = useCallback(async () => {
-    const response = await axiosInstance.delete(`/api/admin/employees/${data.id}`)
+    const response = await axiosInstance.delete(`/admin/customer/${data.id}`);
     const _data = response.data;
 
     if (_data?.message === "Success") {
       router.refresh();
-      router.replace(`/admin/employee`);
-      setOpen(false)
+      router.replace(`/admin/customer`);
+      setOpen(false);
     }
-  }, []);
+  }, [data.id, router]);
 
   return (
     <>
@@ -54,7 +54,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Tác vụ</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/admin/employee/${data.id}`)}
+            onClick={() => router.push(`/admin/customer/${data.id}`)}
           >
             <Edit className='mr-2 h-4 w-4' /> Sửa
           </DropdownMenuItem>

@@ -12,7 +12,7 @@ export const columns: ColumnDef<IUser>[] = [
   },
   {
     accessorKey: "full_name",
-    header: "Họ và tên",
+    header: "Tên zalo/Fb",
   },
   {
     accessorKey: "mobile",
@@ -23,19 +23,18 @@ export const columns: ColumnDef<IUser>[] = [
     header: "Email",
   },
   {
+    accessorKey: "social_network",
+    header: "Link",
+  },
+  {
     accessorKey: "status",
-    header: () => (
-      <div className="text-center">Trạng thái</div>
-    ),
+    header: () => <div className='text-center'>Trạng thái</div>,
     cell: ({ row }) => {
       const isActive = row.original.status;
 
       return (
-        <div className="flex justify-center items-center">
-
-          <Switch
-            checked={isActive}
-          />
+        <div className='flex justify-center items-center'>
+          <Switch checked={isActive} />
         </div>
       );
     },

@@ -1,7 +1,7 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
+import { columns } from "@/components/tables/customer-tables/columns";
 import { CustomerTable } from "@/components/tables/customer-tables/customer-table";
-import { columns } from "@/components/tables/employee-tables/columns";
 import { buttonVariants } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
@@ -16,7 +16,7 @@ interface demoPageProp {
 
 const breadcrumbItems = [
   { title: "Trang chủ", link: "/admin/dashboard" },
-  { title: "Nhân viên", link: "/admin/employee" },
+  { title: "Khách hàng", link: "/admin/customer" },
 ];
 
 export default async function Page({ searchParams }: demoPageProp) {
@@ -35,12 +35,13 @@ export default async function Page({ searchParams }: demoPageProp) {
     .join("&");
 
   const response = await axiosInstance.get(
-    `/api/admin/employees?${searchStr}` + (full_name ? `&search=${full_name}` : "")
+    `/admin/customer?${searchStr}` + (full_name ? `&search=${full_name}` : "")
   );
   let data = await response.data;
-  let userData = data.data.employees;
-  let totalUsers = data.data.totalEmployee;
+  let userData = data.data.customer;
+  let totalUsers = data.data.totalCustomer;
   let pageCount = data.data.totalPages;
+  let currentPage = data.data.currentPage;
   return (
     <PageContainer>
       <div className='space-y-4'>
@@ -60,7 +61,7 @@ export default async function Page({ searchParams }: demoPageProp) {
 
         <CustomerTable
           searchKey='full_name'
-          pageNo={1}
+          pageNo={currentPage}
           columns={columns}
           totalUsers={totalUsers}
           data={userData}
