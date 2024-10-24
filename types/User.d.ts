@@ -21,5 +21,5 @@ export interface IUser {
 
 export interface IPostAddEmPloyeeResponse {
   message: string;
-  data: User;
+  data: IUser;
 }

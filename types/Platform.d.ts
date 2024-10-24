@@ -14,3 +14,18 @@ export interface IPlatform {
   accounts?: IShopAccount[];
   orders?: IOrder[];
 }
+
+export interface IPostAddPlatformResponse {
+  message: string;
+  data: IPlatform;
+}
+
+export interface GetPlatformsResponse {
+  message: string;
+  data: {
+    platforms: IPlatform[];
+    currentPage: number;
+    totalPages: number;
+    total: number;
+  };
+}
