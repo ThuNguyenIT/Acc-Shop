@@ -63,7 +63,7 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({ initialData }) => {
       setLoading(true);
       if (initialData) {
         const response = await axiosInstance.put<IPostAddEmPloyeeResponse>(
-          `/api/admin/employees/update`,
+          `/admin/employees/update`,
           {
             id: initialData.id,
             email: _data.email,
@@ -88,7 +88,7 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({ initialData }) => {
         }
       } else {
         const response = await axiosInstance.post<IPostAddEmPloyeeResponse>(
-          "/api/admin/employees",
+          "/admin/employees",
           {
             email: _data.email,
             mobile: _data.mobile,

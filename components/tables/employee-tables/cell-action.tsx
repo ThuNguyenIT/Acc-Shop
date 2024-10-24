@@ -25,13 +25,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
 
   const onConfirm = useCallback(async () => {
-    const response = await axiosInstance.delete(`/api/admin/employees/${data.id}`)
+    const response = await axiosInstance.delete(`/admin/employees/${data.id}`);
     const _data = response.data;
 
     if (_data?.message === "Success") {
       router.refresh();
       router.replace(`/admin/employee`);
-      setOpen(false)
+      setOpen(false);
     }
   }, []);
 
