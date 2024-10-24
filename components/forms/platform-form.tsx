@@ -27,18 +27,27 @@ const formSchema = z.object({
   mail_recovery: z.string().email({ message: "Email không hợp lệ" }).optional(),
   country: z.string().optional(),
 
-  origin_price: z
-    .string()
-    .regex(/^\d+(\.\d{1,2})?$/, {
-      message:
-        "Giá gốc không hợp lệ",
-    })
-    .optional(),
+  origin_price: z.preprocess(
+    (val) => {
+      if (typeof val === "string") {
+        const numericValue = parseFloat(val.replace(/,/g, ""));
+        return isNaN(numericValue) ? undefined : numericValue;
+      }
+      return val;
+    },
+    z.number().min(0, { message: "Giá gốc không hợp lệ" }).optional()
+  ),
 
-  price: z.string().regex(/^\d+(\.\d{1,2})?$/, {
-    message:
-      "Giá bán không hợp lệ",
-  }),
+  price: z
+    .string()
+    .min(1, { message: "Giá bán là bắt buộc" }) // Bắt buộc trường này phải có giá trị
+    .transform((val) => {
+      const numericValue = parseFloat(val.replace(/,/g, ""));
+      return isNaN(numericValue) ? undefined : numericValue;
+    })
+    .refine((val) => typeof val === 'number' && val > 0, {
+      message: "Giá bán không hợp lệ",
+    }),
 
   percent_discount: z
     .preprocess(
@@ -52,12 +61,16 @@ const formSchema = z.object({
     .optional(),
 
   final_price: z
-    .string()
-    .regex(/^\d+(\.\d{1,2})?$/, {
-      message:
-        "Giá cuối cùng không hợp lệ",
-    })
-    .optional(),
+    .preprocess(
+      (val) => {
+        if (typeof val === "string") {
+          const numericValue = parseFloat(val.replace(/,/g, ""));
+          return isNaN(numericValue) ? undefined : numericValue;
+        }
+        return val;
+      },
+      z.number().min(0, { message: "Giá bán cuối không hợp lệ" }).optional()
+    ),
 });
 
 type PlatformFormValues = z.infer<typeof formSchema>;
@@ -190,6 +203,7 @@ export const PlatformForm: React.FC<PlatformFormProps> = ({ initialData }) => {
               label='Giá gốc'
               placeholder='Nhập giá gốc'
               disabled={loading}
+              formatCurrency
             />
             <FormFieldWrapper
               control={form.control}
@@ -197,6 +211,7 @@ export const PlatformForm: React.FC<PlatformFormProps> = ({ initialData }) => {
               label='Giá bán hiện tại'
               placeholder='Nhập giá bán hiện tại'
               disabled={loading}
+              formatCurrency
             />
             <FormFieldWrapper
               control={form.control}
@@ -211,6 +226,7 @@ export const PlatformForm: React.FC<PlatformFormProps> = ({ initialData }) => {
               label='Giá bán cuối cùng'
               placeholder='Nhập giá bán cuối cùng'
               disabled={loading}
+              formatCurrency
             />
           </div>
           <Button disabled={loading} className='ml-auto' type='submit'>

@@ -48,6 +48,7 @@ const FormFieldWrapper: React.FC<FormFieldWrapperProps> = ({
               placeholder={placeholder}
               type={type}
               {...field}
+              value={formatCurrency ? formatCurrencyValue(field.value) : field.value}
               onChange={(e) => {
                 if (formatCurrency) {
                   const formattedValue = formatCurrencyValue(e.target.value);
