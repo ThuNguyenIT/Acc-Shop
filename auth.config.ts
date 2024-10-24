@@ -1,4 +1,11 @@
-import { CredentialsSignin, NextAuthConfig, Session, User } from "next-auth";
+import {
+  Account,
+  CredentialsSignin,
+  NextAuthConfig,
+  Profile,
+  Session,
+  User,
+} from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 import { randomBytes, randomUUID } from "crypto";
 import { compare } from "bcryptjs";
@@ -37,7 +44,17 @@ const authConfig = {
             where: { email },
             include: {
               model_has_roles: {
-                include: { role: true },
+                include: {
+                  role: {
+                    include: {
+                      role_permissions: {
+                        include: {
+                          permission: true,
+                        },
+                      },
+                    },
+                  },
+                },
               },
             },
           });
@@ -46,7 +63,22 @@ const authConfig = {
             throw new CustomAuthError("Email hoặc mật khẩu không hợp lệ");
           }
 
-          const roles = user.model_has_roles.map(roleRelation => roleRelation.role.name);
+          if (user.is_verified === false) {
+            throw new CustomAuthError("Tài khoản chưa được xác thực");
+          }
+
+          if (user.status === false) {
+            throw new CustomAuthError("Tài khoản đã bị khóa");
+          }
+
+          const roles = user.model_has_roles.map((roleRelation) => {
+            return {
+              roleName: roleRelation.role.name,
+              permissions: (roleRelation.role.role_permissions || []).map(
+                (permissionRelation) => permissionRelation.permission.name
+              ),
+            };
+          });
 
           return {
             id: user.id.toString(),
@@ -75,27 +107,39 @@ const authConfig = {
       }
       return true;
     },
-    async jwt({ token, user }: { token: JWT; user: User }) {
-      if (user) {
-        token.id = user.id;
-        token.name = user.name;
-        token.email = user.email;
-        token.image = user.image;
-        token.roles = (user as any).roles;
-      }
-      return token;
+    async jwt({
+      token,
+      user,
+      account,
+      profile,
+      trigger,
+      isNewUser,
+      session,
+    }: {
+      token: JWT;
+      user?: User;
+      account?: Account | null;
+      profile?: Profile;
+      trigger?: "signIn" | "signUp" | "update";
+      isNewUser?: boolean;
+      session?: any;
+    }) {
+      return { ...token, ...user };
     },
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({
+      session,
+      token,
+      newSession,
+      trigger,
+    }: {
+      session: Session;
+      token: JWT;
+      newSession?: any;
+      trigger?: "update";
+    }) {
       return {
         ...session,
-        user: {
-          ...session.user,
-          id: token.id as string | undefined,
-          email: token.email || "",
-          name: token.name || null,
-          image: typeof token.image === "string" ? token.image : undefined,
-          roles: token.roles,
-        },
+        ...token,
       };
     },
   },
@@ -115,6 +159,7 @@ const authConfig = {
     maxAge: 60 * 60 * 24 * 30, // 30 days
     async encode({ token }) {
       const jwtPayload = {
+        ...token,
         user_id: token?.sub ? parseInt(token.sub) : undefined,
         name: token?.name,
         avatar: token?.image,
@@ -128,6 +173,17 @@ const authConfig = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: `authjs.session-token`,
+      options: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+      },
+    },
+  },
 } satisfies NextAuthConfig;
 
 export default authConfig;
