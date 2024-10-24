@@ -8,7 +8,7 @@ import { User } from '@/constants/data';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
-import { createAxiosInstance } from '@/utils';
+import { createAxiosInstance } from '@/utils/axiosInstance';
 
 interface ProductsClientProps {}
 
@@ -40,7 +40,7 @@ export const UserClient: React.FC<ProductsClientProps> = (props) => {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Users (${data.length})`}
+          title={`Users`}
           description="Manage users (Client side table functionalities.)"
         />
         <Button
