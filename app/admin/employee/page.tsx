@@ -35,7 +35,7 @@ export default async function Page({ searchParams }: demoPageProp) {
     .join("&");
 
   const response = await axiosInstance.get(
-    `/api/admin/employees?${searchStr}` + (country ? `&search=${country}` : "")
+    `/admin/employees?${searchStr}` + (country ? `&search=${country}` : "")
   );
   let data = await response.data;
   let userData = data.data.employees;

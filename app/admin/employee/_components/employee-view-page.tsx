@@ -14,7 +14,7 @@ export default async function EmployeeViewPage({
     let product = null;
     if (productId !== "new") {
         const response = await axiosInstance.get(
-            `/api/admin/employees/${productId}`
+            `/admin/employees/${productId}`
         );
         product = response.data.data;
         if (!product) {
